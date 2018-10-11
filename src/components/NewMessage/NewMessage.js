@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StoreContext } from '../../contexts/StoreContext';
+import { withMessages } from '../../contexts/StoreContext';
 
 const NewMessageStyle = {
   background: 'green',
@@ -7,7 +7,7 @@ const NewMessageStyle = {
   borderRadius: '5px'
 };
 
-class NewMessage extends Component {
+const NewMessage = withMessages(class extends Component {
   constructor(props) {
     super(props);
 
@@ -25,8 +25,8 @@ class NewMessage extends Component {
     })
   };
 
-  postMessage = (ctx) => {
-    ctx.updateValue('messages', {
+  postMessage = () => {
+    this.props.addMessage({
       author: this.state.author,
       date: new Date().toJSON().slice(0, 10),
       message: this.state.newMessage,
@@ -42,44 +42,40 @@ class NewMessage extends Component {
   render() {
     return (
       <div style={NewMessageStyle}>
-        <StoreContext.Consumer>
-          {(context) => (
-            <form>
-              <div className="form-group">
-                <label htmlFor="author">Author</label>
-                <input
-                  name="author"
-                  type="text"
-                  value={this.state.author}
-                  onChange={this.updateState}
-                  className="form-control"
-                  placeholder="Author"/>
-              </div>
-              <div className="form-group">
-                <label htmlFor="newMessage">Message</label>
-                <textarea
-                  type="text"
-                  name="newMessage"
-                  className="form-control"
-                  value={this.state.newMessage}
-                  onChange={this.updateState}
-                  style={{ 'resize': 'none' }}
-                  placeholder="Message">{''}</textarea>
-              </div>
-              <div className="form-group text-right">
-                <button
-                  type="button"
-                  disabled={!this.state.newMessage.length || !this.state.author}
-                  onClick={this.postMessage.bind(this, context)}
-                  className="btn btn-success">Post Message
-                </button>
-              </div>
-            </form>
-          )}
-        </StoreContext.Consumer>
+        <form>
+          <div className="form-group">
+            <label htmlFor="author">Author</label>
+            <input
+              name="author"
+              type="text"
+              value={this.state.author}
+              onChange={this.updateState}
+              className="form-control"
+              placeholder="Author"/>
+          </div>
+          <div className="form-group">
+            <label htmlFor="newMessage">Message</label>
+            <textarea
+              type="text"
+              name="newMessage"
+              className="form-control"
+              value={this.state.newMessage}
+              onChange={this.updateState}
+              style={{ 'resize': 'none' }}
+              placeholder="Message">{''}</textarea>
+          </div>
+          <div className="form-group text-right">
+            <button
+              type="button"
+              disabled={!this.state.newMessage.length || !this.state.author}
+              onClick={this.postMessage}
+              className="btn btn-success">Post Message
+            </button>
+          </div>
+        </form>
       </div>
     );
   }
-}
+});
 
 export default NewMessage;

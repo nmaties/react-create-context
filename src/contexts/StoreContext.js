@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 const StoreContext = React.createContext();
 
-class AppProvider extends Component {
+class MessageProvider extends Component {
     constructor(props){
       super(props);
 
@@ -10,8 +10,9 @@ class AppProvider extends Component {
       }
     }
 
-    updateValue = (key, val) => {
-        this.setState({ [key]: this.state.messages.concat([val]) });
+    updateValue = (val) => {
+        const value = this.state.messages.concat([val]);
+        this.setState({ messages: value });
     };
 
     render(){
@@ -23,4 +24,24 @@ class AppProvider extends Component {
     }
 }
 
-export { StoreContext, AppProvider };
+
+const withMessages = (WrappedComponent) => class extends Component {
+
+  addMessage = (context) => (val) => context.updateValue(val);
+
+  render(){
+    return (
+      <StoreContext.Consumer>
+        {(context) => (
+         <WrappedComponent
+          messages={context.state.messages}
+          addMessage={this.addMessage(context)}
+          {...this.props}
+        />)}
+      </StoreContext.Consumer>
+    )
+  }
+};
+
+
+export { StoreContext, MessageProvider, withMessages };

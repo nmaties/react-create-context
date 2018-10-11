@@ -9,10 +9,7 @@ class StoreData extends Component {
           {(context) => (
             context.state.messages.map((el) =>{
               return (<span className="col-sm-6" key={el.id}>
-                author: {el.author} <br/>
-                message: {el.message} <br/>
-                date: {el.date} <br/>
-                id: {el.id} <br/>
+
                 <hr/>
               </span>)
             })

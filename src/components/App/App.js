@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { AppProvider } from '../../contexts/StoreContext';
+import { MessageProvider, withMessages } from '../../contexts/StoreContext';
 import ChatBox from '../ChatBox/ChatBox';
 import NewMessage from '../NewMessage/NewMessage';
 import StoreData from '../StoreData/StoreData';
-import { StoreContext } from '../../contexts/StoreContext';
 import './App.css';
 
 const AppComponentStyle = {
@@ -13,10 +12,25 @@ const AppComponentStyle = {
   marginTop: '10px'
 };
 
+const StoreLog = withMessages(props => props.messages.length ? (<div className="container">
+  <h1>My Store ?</h1>
+  <hr/>
+  <div className="row col-sm-12">
+      { props.messages.map((el) => <div className="col-sm-6">
+          author: {el.author} <br/>
+          message: {el.message} <br/>
+          date: {el.date} <br/>
+          id: {el.id} <hr/>
+      </div>)
+      }
+  </div>
+</div>): '');
+
 class App extends Component {
   render() {
     return (
-      <AppProvider>
+      <div>
+        <MessageProvider>
         <div className="container" style={AppComponentStyle}>
           <div className="row col-sm-12">
             <div className="col-sm-6 mr-md-auto">
@@ -28,20 +42,9 @@ class App extends Component {
           </div>
         </div>
         <br/>
-        <StoreContext.Consumer>
-          {(context) => {
-            if (context.state.messages.length) {
-              return (<div className="container">
-                <h1>My Store ?</h1>
-                <hr/>
-                <div className="row col-sm-12">
-                  <StoreData/>
-                </div>
-              </div>)
-            }
-          }}
-        </StoreContext.Consumer>
-      </AppProvider>
+        <StoreLog />
+        </MessageProvider>
+      </div>
     );
   }
 }
